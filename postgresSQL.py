@@ -2,7 +2,7 @@
 import psycopg2
 
 # connect to databae server
-conn = psycopg2.connect(host="localhost", dbname="postgres", user="postgres", password="database_design", port=5433)
+conn = psycopg2.connect(host="localhost", dbname="postgres", user="postgres", password="", port=5433)
 
 cur = conn.cursor()
 
