@@ -13,11 +13,11 @@ cur = conn.cursor()
 cur.execute(open("/Users/ryan/Desktop/Database Design/FinalProjectCollection/MovieTheaterDB/Tables.sql", "r").read())
 conn.commit()
 
-'''
+
 # insert into or update values in database
 cur.execute(open("/Users/ryan/Desktop/Database Design/FinalProjectCollection/MovieTheaterDB/Inserts.sql", "r").read())
 conn.commit()
-'''
+
 
 print("CREATE-INSERT complete")
 

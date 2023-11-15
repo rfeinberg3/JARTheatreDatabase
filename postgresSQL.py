@@ -16,17 +16,17 @@ def main_page():
         print("Welcome to JAR, where movies are.")
         print("##################################")
         print("Navigations: ")
-        print("1.  Member Login <-- Under Construction")
+        print("1.  Member Login")
         print("2.  Employee Login <-- Under Construction")
         print("3.  Admin Login")
         print("4.  About JAR <-- Under Construction")
         print("0.  Exit")
 
         # check user input
-        userInput = int(input("Please select by entering one of digits 1-4: "))
+        userInput = int(input("Please select by entering one of digits 0-4: "))
         while(userInput < 0 or userInput > 4):
             print("---> Invalid selection <---")
-            userInput = int(input("Please select by entering one of digits 1-4: "))
+            userInput = int(input("Please select by entering one of digits 0-4: "))
 
         # page transitions:
         if userInput == 1:
@@ -43,8 +43,55 @@ def main_page():
 
 
 def member_page():
-    " create member login "
-    #table = input("Table name: ")
+    # member login/signup *
+    userInput = -1
+    while(userInput!=0):
+        print("\n\n##################")
+        print("Greetings!")
+        print("##################")
+        print("Navigations: ")
+        print("1.  Sign Up")
+        print("2.  Login <-- Under Construction")
+        print("0.  Exit")
+
+        # check user input
+        userInput = int(input("Please select by entering one of digits 0-2: "))
+        while(userInput < 0 or userInput > 2):
+            print("---> Invalid selection <---")
+            userInput = int(input("Please select by entering one of digits 0-2: "))
+
+       # page transitions:
+        if userInput == 1: # signup <---
+            # get username and password (iterates until user confirms their username and password is entered correctly)
+            userInput = -1
+            while(userInput!=1): 
+                name = input("Enter your full name: ")
+                email = input("Enter an email address: ")
+                password = input("Enter a password: ")
+                userInput = int(input("Is name: {}, email: {}, and password: {} correct? (1=yes, 0=no): ".format(name, email, password)))
+            print("Creating Account...")
+            cur.execute(''' INSERT INTO Customers(MemberID, Password, Points, Name, Email) VALUES(0000000000, '{}', 0, '{}', '{}' ) '''.format(password, name, email))
+            conn.commit()
+            print("Account Created... Redirecting to login page...")
+            userInput = 2
+        if userInput == 2: # login <---
+            # get username and password (iterates until user confirms their username and password is entered correctly)
+            print("Login: ")
+            loginValid = False
+            while(not loginValid): 
+                email = input("Enter an email address: ")
+                password = input("Enter a password: ")
+                cur.execute(''' SELECT Email, Password FROM Customers WHERE Email = '{}' AND Password = '{}' '''.format(email, password))
+                if (cur.fetchall().count != 0):
+                    print(cur.fetchall().count)
+                    loginValid = True
+                print(loginValid)
+        
+
+
+        if userInput == 0:
+            print("Returning to main page... ")
+
     #values = []
     #values.append(input("Value tuple {}: ".format(iteration)))
     ## from table and values create an sql query

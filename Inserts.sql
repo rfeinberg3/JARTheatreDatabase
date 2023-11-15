@@ -1,4 +1,4 @@
-INSERT INTO Movies(MovieID, MovieName, Duration, Director, Rated, Rating, is3D)
+INSERT INTO Movies(MovieID, Name, Duration, Director, Rated, Rating, is3D)
 VALUES
 (123456789101, 'The Hunger Games', '2:38', 'Francis Lawrence', 'true', 7, 'false'),
 (111111111111, 'Wish', '1:35', 'Fawn Veerasunthorn', 'false', -1, 'false'),
