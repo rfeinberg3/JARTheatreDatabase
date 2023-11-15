@@ -68,7 +68,9 @@ INSERT INTO Staff(StaffID, Name, Email, PhoneNumber)
 
 INSERT INTO ConcessionStand(ItemID, Name, Price, Quantity)
 	VALUES
-	();
+	('000000', 'Small Popcorn', 7.09, 60),
+	('000001', 'Medium Popcorn', 8.09, 50),
+	('000002', 'Large Popcorn', 9.09, 55);
 
 INSERT INTO ConcessionPurchase(Receipt, MemberID, ItemID)
 	VALUES
