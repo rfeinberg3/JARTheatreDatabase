@@ -74,7 +74,7 @@ INSERT INTO ConcessionStand(ItemID, Name, Price, Quantity)
 
 INSERT INTO ConcessionPurchase(Receipt, MemberID, ItemID)
 	VALUES
-	();
+	(100, '0795246801', '000000');
 
 INSERT INTO ScheduledAt(StaffID, TheaterCode)
 	VALUES
