@@ -64,7 +64,9 @@ INSERT INTO Tickets(TicketID, Showing, Price, TicketPurchaser, RoomID, Seat, Row
 
 INSERT INTO Staff(StaffID, Name, Email, PhoneNumber)
 	VALUES
-	();
+	('0101010100', 'Lewis Sheeran', 'lsheeran3@gamil.com', 1356305033),
+	('0245843220', 'Abby Jonhson', 'abjohn@yahoo.com', 1197675399),
+	('0123456770', 'Clement	Matthew', 'cmatthew@yelp.com', 1874565024);
 
 INSERT INTO ConcessionStand(ItemID, Name, Price, Quantity)
 	VALUES
