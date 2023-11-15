@@ -56,7 +56,11 @@ INSERT INTO Customers(MemberID, Password, Points, Name, Email)
 
 INSERT INTO Tickets(TicketID, Showing, Price, TicketPurchaser, RoomID, Seat, Row)
 	VALUES
-	();
+	('01234567', '234567890', 9.99, '0123456789', '2', 1, 'A'),
+	('01234568', '234567890', 9.99, '0123456789', '2', 2, 'A'),
+	('01234569', '234567890', 9.99, '0123456789', '2', 3, 'A'),
+	('01234570', '234567890', 9.99, '0123456789', '2', 4, 'A'),
+	('01234571', '234567890', 9.99, '0123456789', '2', 5, 'A');
 
 INSERT INTO Staff(StaffID, Name, Email, PhoneNumber)
 	VALUES
