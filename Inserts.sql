@@ -80,4 +80,6 @@ INSERT INTO ConcessionPurchase(Receipt, MemberID, ItemID)
 
 INSERT INTO ScheduledAt(StaffID, TheaterCode)
 	VALUES
-	();
+	('0101010100', '1111'),
+	('0245843220', '2222'),
+	('0123456770', '3333');
