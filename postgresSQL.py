@@ -1,20 +1,13 @@
-# import library for python to postgreSQL connection
+# import library for postgreSQL connection
 import psycopg2
 
-# connect to databae server
-conn = psycopg2.connect(host="localhost", dbname="postgres", user="postgres", password="", port=5433)
+# connect to database server
+conn = psycopg2.connect(host="localhost", dbname="postgres", user="postgres", password="database_design", port=5433)
 
+# create cursor to database
 cur = conn.cursor()
 ########################################################################################################################
 
-# initiate tables if they don't exist
-cur.execute(open("Tables.sql", "r").read())
-
-### run to initiate values 
-#cur.execute(""" INSERT INTO Staff(StaffID, Name, Email, PhoneNumber) VALUES
-            #(1111111111, 'Ryan', 'rfein@gmail.com', 561);  """)
-## commit changes to database
-#conn.commit()
 
 def main_page():
     userInput = -1
@@ -29,11 +22,13 @@ def main_page():
         print("4.  About JAR <-- Under Construction")
         print("0.  Exit")
 
+        # check user input
         userInput = int(input("Please select by entering one of digits 1-4: "))
         while(userInput < 0 or userInput > 4):
             print("---> Invalid selection <---")
             userInput = int(input("Please select by entering one of digits 1-4: "))
 
+        # page transitions:
         if userInput == 1:
             member_page()
         if userInput == 2:
@@ -61,6 +56,7 @@ def employee_page():
 
 def admin_page():
     " create admin login "
+    # welcome interface
     userInput = -1
     while(userInput!=0):
         print("\n\n##################################")
@@ -77,12 +73,12 @@ def admin_page():
             print("---> Invalid selection <---")
             userInput = int(input("Selection: "))
         
-        # selections...
+        # selections:
         if userInput == 1: # INSERT
             command = input("postgreSQL INSERT: ")
             string = """ {} """.format(command)
             cur.execute(string)
-            conn.commit()  # commit changes to databaseß
+            conn.commit()  # commit changes to database
 
         if userInput == 2: # SELECT
             command = input("postgreSQL SELECT query: ")
@@ -92,12 +88,12 @@ def admin_page():
                 print(row) 
 
         if userInput == 3: # DELETE
-            command = input("postgreSQL SELECT query: ")
+            command = input("postgreSQL DELETE query: ")
             string = """ {} """.format(command)
             userInput = input("Are you sure you want to delete? Enter 'DELETE' if so: ")
             if userInput == "DELETE":
                 cur.execute(string)
-                conn.commit()  # commit changes to databaseß
+                conn.commit()  # commit changes to database
             else:
                 userInput = -1
                 print("Redirecting...")
@@ -107,61 +103,16 @@ def admin_page():
 def about_page():
     pass
 
+
 ### Main ###
 ####################
+
+# initiate program
 main_page()
-####################
-### End Main ###
-
-'''
-cur.execute("""CREATE TABLE IF NOT EXISTS Movies (
-    MovieID VARCHAR(12),
-    Name VARCHAR(50),
-    Duration TIME,
-    Director VARCHAR(50),
-    Rated INTEGER,
-    Rating INTEGER,
-    is3D BOOLEAN
-);
-""")
-
-cur.execute("""CREATE TABLE IF NOT EXISTS Theaters (
-    TheaterCode VARCHAR(12),
-    Address VARCHAR(100),
-    Sponsor VARCHAR(50)
-);
-""")
-
-cur.execute("""CREATE TABLE IF NOT EXISTS Rooms (
-    TheaterCode VARCHAR(12) REFERENCES Theaters ON DELETE CASCADE,
-    RoomID INTEGER,
-    isXD BOOLEAN,
-    Capacity INTEGER
-);
-""")
-
-cur.execute("""CREATE TABLE IF NOT EXISTS At (
-    MovieID VARCHAR(12) REFERENCES Movies NOT NULL,
-    TheaterCode INTEGER REFERENCES Theaters NOT NULL
-);
-""")
-
-cur.execute("""CREATE TABLE IF NOT EXISTS Showing (
-    MovieID VARCHAR(12) REFERENCES Movies NOT NULL,
-    MovieName VARCHAR(50),
-    Date DATE,
-    StartTime TIME,
-    TheaterCode VARCHAR(12) REFERENCES Theaters NOT NULL,
-    RoomID VARCHAR(12) REFERENCES Rooms NOT NULL
-);
-""")
-'''
-
-########################################################################################################################
-
-# commit changes to database
-conn.commit()
 
 # close cursor and database connection
 cur.close()
 conn.close()
+
+####################
+### End Main ###

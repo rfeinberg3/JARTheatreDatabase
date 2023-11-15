@@ -1,9 +1,9 @@
 CREATE TABLE IF NOT EXISTS Movies (
     MovieID VARCHAR(12) PRIMARY KEY,
-    Name VARCHAR(50),
+    MovieName VARCHAR(50),
     Duration TIME,
     Director VARCHAR(50),
-    Rated INTEGER,
+    Rated BOOLEAN,
     Rating INTEGER,
     is3D BOOLEAN
 );
