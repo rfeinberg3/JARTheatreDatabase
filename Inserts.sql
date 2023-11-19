@@ -18,13 +18,17 @@ INSERT INTO Rooms(TheaterCode, RoomID, isXD, Capacity)
 	(1111, 2, 'false', 75),
 	(1111, 3, 'true', 100),
 	(1111, 4, 'false', 85),
-	(1111, 5, 'true', 120),
-	(2222, 1, 'false', 80),
-	(2222, 2, 'true', 110),
-	(2222, 3, 'false', 65),
-	(2222, 4, 'true', 100),
-	(3333, 1, 'false', 40),
-	(3333, 2, 'true', 50);
+	(1111, 5, 'true', 120);
+
+	--''' RoomID can't have multiple of the same values within the same table because it's a primary key.
+	--(2222, 1, 'false', 80),
+	--(2222, 2, 'true', 110),
+	--(2222, 3, 'false', 65),
+	--(2222, 4, 'true', 100),
+	--(3333, 1, 'false', 40),
+	--(3333, 2, 'true', 50);
+	--'''
+
 
 INSERT INTO At(MovieID, TheaterCode) 
 	VALUES

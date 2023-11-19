@@ -2,7 +2,7 @@
 import psycopg2
 
 # connect to database server
-conn = psycopg2.connect(host="localhost", dbname="postgres", user="postgres", password="database_design", port=5433)
+conn = psycopg2.connect(host="localhost", dbname="", user="postgres", password="database_design", port=5433)
 # create cursor to database
 cur = conn.cursor()
 
