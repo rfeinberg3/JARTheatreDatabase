@@ -19,7 +19,8 @@ def main_page():
         print("Navigations: ")
         print("1.  Member Login")
         print("2.  Admin Page")
-        print("3.  About JAR <-- Under Construction")
+        print("3.  See Showtimes")
+        print("4.  About JAR <-- Under Construction")
         print("0.  Exit")
 
         # check user input
@@ -34,6 +35,8 @@ def main_page():
         if userInput == 2:
             admin_page()
         if userInput == 3:
+            showtime_page()
+        if userInput == 4:
             about_page()
         if userInput == 0:
             print("Exiting program... Goodbye :)")
@@ -159,8 +162,10 @@ def admin_page():
                 print("Redirecting...")
         if userInput == 0: # Exit 
             print("Returning to main page...\n\n")
+# end of admin_page()
 
-# end of admin_login
+def showtime_page():
+    pass
 
 def about_page():
     pass
@@ -200,6 +205,7 @@ def member_portal(MemberID):
 
         if userInput == 0: #  Logout ---> returns user to main_page()
             print("Logging out...")
+# end member_portal()
 
 ### Main ###
 ####################
