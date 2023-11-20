@@ -76,7 +76,12 @@ INSERT INTO ConcessionStand(ItemID, Name, Price, Quantity)
 	VALUES
 	('000000', 'Small Popcorn', 7.09, 60),
 	('000001', 'Medium Popcorn', 8.09, 50),
-	('000002', 'Large Popcorn', 9.09, 55);
+	('000002', 'Large Popcorn', 9.09, 55),
+	('252710', 'Candy', 3.99, 120),
+	('936512', 'Nachos', 7.59, 600),
+	('786210', 'Small Soft Drink', 5.09, 100),
+	('786211', 'Medium Soft Drink', 5.79, 100),
+	('786212', 'Large Soft Drink', 6.29, 90);
 
 INSERT INTO ConcessionPurchase(Receipt, MemberID, ItemID)
 	VALUES
