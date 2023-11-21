@@ -19,15 +19,14 @@ def main_page():
         print("Navigations: ")
         print("1.  Member Login")
         print("2.  Admin Page")
-        print("3.  See Showtimes")
-        print("4.  About JAR <-- Under Construction")
+        print("3.  About JAR <-- Under Construction")
         print("0.  Exit")
 
         # check user input
-        userInput = int(input("Please select by entering one of digits 0-4: "))
-        while(userInput < 0 or userInput > 4):
+        userInput = int(input("Please select by entering one of digits 0-3: "))
+        while(userInput < 0 or userInput > 3):
             print("---> Invalid selection <---")
-            userInput = int(input("Please select by entering one of digits 0-4: "))
+            userInput = int(input("Please select by entering one of digits 0-3: "))
 
         # page transitions:
         if userInput == 1:
@@ -35,8 +34,6 @@ def main_page():
         if userInput == 2:
             admin_page()
         if userInput == 3:
-            showtime_page()
-        if userInput == 4:
             about_page()
         if userInput == 0:
             print("Exiting program... Goodbye :)")
@@ -112,10 +109,6 @@ def employee_page():
     pass
 
 def admin_page():
-    password = input("Enter the admin password: ")
-    if password != "jar":
-        print("incorrect password")
-        return
     # welcome interface
     userInput = -1
     while(userInput!=0):
@@ -125,14 +118,14 @@ def admin_page():
         print("1.  INSERT")
         print("2.  SELECT")
         print("3.  DELETE")
-        print("4.  Employee Information")
-        print("5.  Customer Information")
-        print("6.  Theater Information")
+        print("4.  Advanced Queries")
+        #print("5.  Customer Information")
+        #print("6.  Theater Information")
         print("0.  Back")
 
         # make a selection
         userInput = int(input("Selection: "))
-        while(userInput < 0 or userInput > 3):
+        while(userInput < 0 or userInput > 4):
             print("---> Invalid selection <---")
             userInput = int(input("Selection: "))
         
@@ -160,12 +153,28 @@ def admin_page():
             else:
                 userInput = -1
                 print("Redirecting...")
+
+        if userInput == 4: # Advanced Queries
+            print("\n##################################")
+            print("Advanced Query Selection:")
+            print("1...")
+            print("2...")
+            command = int(input("Would you like to see a specific employees info? (enter 1, or enter 0 to see all): "))
+            if command:
+                empName = input("Enter employee's name: ")
+                cur.execute(''' SELECT * FROM Staff WHERE Name = '{}'; '''.format(empName))
+            else:
+                cur.execute(''' SELECT * FROM Staff; ''')
+            print("##################################")
+            for row in cur.fetchall():
+                name = row[1]
+                email = row[2]
+                phone = row[3]
+                print("Employee Name: {} ---> Email: {}, Phone#: {}".format(name, email, phone))
+
         if userInput == 0: # Exit 
             print("Returning to main page...\n\n")
 # end of admin_page()
-
-def showtime_page():
-    pass
 
 def about_page():
     pass
@@ -180,12 +189,14 @@ def member_portal(MemberID):
         print("1.  See Profile")
         print("2.  Change Email or Password <--- Under Construction")
         print("3.  See Points")
+        print("4.  See Movie History <--- Under Construction")
+        print("5.  Browse Movies <--- Under Construction")
         print("0.  Logout")
         # check user input
-        userInput = int(input("Please select by entering one of digits 0-3: "))
-        while(userInput < 0 or userInput > 3):
+        userInput = int(input("Please select by entering one of digits 0-5: "))
+        while(userInput < 0 or userInput > 5):
             print("---> Invalid selection <---")
-            userInput = int(input("Please select by entering one of digits 0-3: "))
+            userInput = int(input("Please select by entering one of digits 0-5: "))
 
         if userInput == 1: #  See Profile
             cur.execute(''' SELECT Name, Email, Password FROM Customers WHERE MemberID = '{}';'''.format(MemberID))
@@ -203,6 +214,19 @@ def member_portal(MemberID):
             points = output[0][0]
             print("JAR Point Total: {}".format(points))
 
+        if userInput == 5: #  Browse Movies
+            cur.execute(''' SELECT Name, Duration, Director, Rated, Rating, is3D FROM Movies;''')
+            for row in cur.fetchall():
+                name = row[0]
+                dur = row[1]
+                dir = row[2]
+                rated = row[3]
+                if rated:
+                    rating = row[4]
+                else:
+                    rating = "Not Rated"
+                is3D = row[5]
+                print("Movie: {} ---> Duration: {} -- Director: {} -- Rating: {} -- Movie in 3D: {}".format(name, dur, dir, rating, is3D))
         if userInput == 0: #  Logout ---> returns user to main_page()
             print("Logging out...")
 # end member_portal()
