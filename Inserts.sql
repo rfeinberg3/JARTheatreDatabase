@@ -12,22 +12,13 @@ INSERT INTO Theaters(TheaterCode, Address, Sponsor)
 	(2222, '987 Theater Blvd', 'Regal Theaters'),
 	(3333, '567 Business Dr', 'Local Theater');
 
-INSERT INTO Rooms(TheaterCode, RoomID, isXD, Capacity) 
+INSERT INTO Rooms(RoomID, TheaterCode, isXD, Capacity) 
 	VALUES 
-	(1111, 1, 'false', 80),
-	(1111, 2, 'false', 75),
-	(1111, 3, 'true', 100),
-	(1111, 4, 'false', 85),
-	(1111, 5, 'true', 120);
-
-	--''' RoomID can't have multiple of the same values within the same table because it's a primary key.
-	--(2222, 1, 'false', 80),
-	--(2222, 2, 'true', 110),
-	--(2222, 3, 'false', 65),
-	--(2222, 4, 'true', 100),
-	--(3333, 1, 'false', 40),
-	--(3333, 2, 'true', 50);
-	--'''
+	(1, 1111, 'false', 80),
+	(2, 1111, 'false', 75),
+	(3, 1111, 'true', 100),
+	(4, 1111, 'false', 85),
+	(5, 1111, 'true', 120);
 
 
 INSERT INTO At(MovieID, TheaterCode) 

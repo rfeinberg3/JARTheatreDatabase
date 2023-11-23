@@ -189,8 +189,8 @@ def member_portal(MemberID):
         print("1.  See Profile")
         print("2.  Change Email or Password <--- Under Construction")
         print("3.  See Points")
-        print("4.  See Movie History <--- Under Construction")
-        print("5.  Browse Movies <--- Under Construction")
+        print("4.  See Purchased Tickets <--- Under Construction")
+        print("5.  Browse Movies")
         print("0.  Logout")
         # check user input
         userInput = int(input("Please select by entering one of digits 0-5: "))
@@ -214,8 +214,11 @@ def member_portal(MemberID):
             points = output[0][0]
             print("JAR Point Total: {}".format(points))
 
-        if userInput == 5: #  Browse Movies
-            cur.execute(''' SELECT Name, Duration, Director, Rated, Rating, is3D FROM Movies;''')
+        if userInput == 4: #  See Purchased Tickets
+            cur.execute(f''' SELECT Name, Duration, Director, Rated, Rating, is3D 
+                             FROM Showing, Movies, Tickets WHERE TicketPurchaser = '{MemberID}' 
+                                AND Tickets.Showing = Showing.ShowingID 
+                                AND Showing.MovieID = Movies.MovieID;''')
             for row in cur.fetchall():
                 name = row[0]
                 dur = row[1]
@@ -226,7 +229,45 @@ def member_portal(MemberID):
                 else:
                     rating = "Not Rated"
                 is3D = row[5]
-                print("Movie: {} ---> Duration: {} -- Director: {} -- Rating: {} -- Movie in 3D: {}".format(name, dur, dir, rating, is3D))
+                print("Ticket Purchased for -----  Movie: {} ---> Duration: {} -- Director: {} -- Rating: {} -- Movie in 3D: {}".format(name, dur, dir, rating, is3D))
+        
+
+        if userInput == 5: #  Browse Movies
+            cur.execute(''' SELECT MovieID, Name, Duration, Director, Rated, Rating, is3D FROM Movies;''')
+            movies = cur.fetchall()
+            for row in movies:
+                id = row[0]
+                name = row[1]
+                dur = row[2]
+                dir = row[3]
+                rated = row[4]
+                if rated:
+                    rating = row[5]
+                else:
+                    rating = "Not Rated"
+                is3D = row[6]
+                print("ID: {} ---> Movie: {} ---> Duration: {} -- Director: {} -- Rating: {} -- Movie in 3D: {}".format(id, name, dur, dir, rating, is3D))
+            userInput = int(input("Enter the name an ID to buy a ticket (or 0 to cancel): "))
+            if userInput:
+                for movie in movies:
+                    if int(movie[0]) == userInput:
+                        movieName = movie[1]
+                ticketID = str(random.randint(9999999, 99999999))
+                price = 6
+                purchaser = MemberID
+                roomID = 2222
+                seat = 9
+                row = 'B'
+                cur.execute(''' SELECT ShowingID FROM Showing WHERE MovieID = '{}'; '''.format(userInput))
+                output = cur.fetchall()
+                Showing = output[0][0]
+                cur.execute(''' INSERT INTO Tickets(TicketID, Showing, Price, TicketPurchaser, RoomID, Seat, Row)
+	                            VALUES ({}, {}, {}, {}, {}, {}, '{}');   
+                            '''.format(ticketID, Showing, price, purchaser, roomID, seat, row))
+                conn.commit()
+                print("Congrats!!! Your ticket for {} has been purchased!!!".format(movieName))
+            userInput = -1
+
         if userInput == 0: #  Logout ---> returns user to main_page()
             print("Logging out...")
 # end member_portal()
