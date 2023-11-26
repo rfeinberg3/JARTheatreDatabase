@@ -9,7 +9,7 @@ conn = psycopg2.connect(host="localhost", dbname="jarMovies", user="postgres", p
 cur = conn.cursor()
 ########################################################################################################################
 
-INJECTIONCHARS = [',', '\'', '-', '#', ';'] # Characters that could be used for SQL injection attacks, which should be ommited from any inputs
+INJECTIONCHARS = [',', '\'', '-', '#', ';'] # Characters that could be used for SQL injection attacks, which should be omitted from any inputs
 
 def main_page():
     userInput = -1
@@ -213,7 +213,7 @@ def member_portal(MemberID):
         print("1.  See Profile")
         print("2.  Change Email or Password <--- Under Construction")
         print("3.  See Points")
-        print("4.  See Purchased Tickets <--- Under Construction")
+        print("4.  See Purchased Tickets")
         print("5.  Browse Movies")
         print("0.  Logout")
         # check user input
@@ -232,14 +232,15 @@ def member_portal(MemberID):
         
         if userInput == 2: #  Change Email or Password
             continue
+
         if userInput == 3: #  See Points
             cur.execute(''' SELECT Points FROM Customers WHERE MemberID = '{}'; '''.format(MemberID))
             output = cur.fetchall()
             points = output[0][0]
             print("JAR Point Total: {}".format(points))
 
-        if userInput == 4: #  See Purchased Tickets
-            cur.execute(f''' SELECT Name, Duration, Director, Rated, Rating, is3D 
+        if userInput == 4: #  See DISTINCTLY Purchased Tickets
+            cur.execute(f''' SELECT DISTINCT Name, Duration, Director, Rated, Rating, is3D 
                              FROM Showing, Movies, Tickets WHERE TicketPurchaser = '{MemberID}' 
                                 AND Tickets.Showing = Showing.ShowingID 
                                 AND Showing.MovieID = Movies.MovieID;''')
