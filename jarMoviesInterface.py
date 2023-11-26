@@ -9,6 +9,7 @@ conn = psycopg2.connect(host="localhost", dbname="jarMovies", user="postgres", p
 cur = conn.cursor()
 ########################################################################################################################
 
+INJECTIONCHARS = [',', '\'', '-', '#', ';'] # Characters that could be used for SQL injection attacks, which should be ommited from any inputs
 
 def main_page():
     userInput = -1
@@ -68,6 +69,13 @@ def member_login():
                 password = input("Enter a password: ")
                 MemberID = str(random.randint(999999999, 9999999999))
                 userInput = int(input("Is name: {}, email: {}, and password: {} correct? (1=yes, 0=no): ".format(name, email, password)))
+                # Injection attack check
+                if userInput:
+                    for CHAR in INJECTIONCHARS:
+                        if ((CHAR in name) or (CHAR in email) or (CHAR in password)):
+                            print(f"Invalid character = {CHAR}\nReturning to Main Page...")
+                            return
+            # Account creation valid
             print("Creating Account...")
             print("Account created with Member ID: {}".format(MemberID))
             cur.execute(''' INSERT INTO Customers(MemberID, Password, Points, Name, Email) VALUES({}, '{}', 0, '{}', '{}' ) '''.format(MemberID, password, name, email))
@@ -98,15 +106,13 @@ def member_login():
                 member_portal(MemberID)# call member page
             else:
                 print("Login details invalid. Returning to Navigation Page...")
+                userInput = -1
 
         if userInput == 0:
             print("Returning to main page... ")
 
 # end of member_login()
 
-def employee_page():
-    " create employee login maybe"
-    pass
 
 def admin_page():
     # welcome interface
@@ -119,8 +125,6 @@ def admin_page():
         print("2.  SELECT")
         print("3.  DELETE")
         print("4.  Advanced Queries")
-        #print("5.  Customer Information")
-        #print("6.  Theater Information")
         print("0.  Back")
 
         # make a selection
@@ -157,23 +161,43 @@ def admin_page():
         if userInput == 4: # Advanced Queries
             print("\n##################################")
             print("Advanced Query Selection:")
-            print("1...")
-            print("2...")
-            command = int(input("Would you like to see a specific employees info? (enter 1, or enter 0 to see all): "))
-            if command:
-                empName = input("Enter employee's name: ")
-                cur.execute(''' SELECT * FROM Staff WHERE Name = '{}'; '''.format(empName))
-            else:
-                cur.execute(''' SELECT * FROM Staff; ''')
-            print("##################################")
-            for row in cur.fetchall():
-                name = row[1]
-                email = row[2]
-                phone = row[3]
-                print("Employee Name: {} ---> Email: {}, Phone#: {}".format(name, email, phone))
+            print("1.  What Theater(s) Does an Employee Work At?")
+            print("2.  What Have Customers Been Eating?")
+            print("0.  Back")
 
-        if userInput == 0: # Exit 
+            # make a selection
+            userInput = int(input("Selection: "))
+            while(userInput < 0 or userInput > 2):
+                print("---> Invalid selection <---")
+                userInput = int(input("Selection: "))
+
+            if userInput == 1: # Advanced Query 1
+                empName = input("Enter employee's name: ") # ask for user to input employees name
+                # Test for invalid characters
+                for CHAR in INJECTIONCHARS:
+                    if CHAR in empName:
+                        print(f"Invalid character = {CHAR}\nReturning to Main Page...")
+                        return
+                # Execute Statement
+                cur.execute(''' SELECT Theaters.TheaterCode, Address, Sponsor 
+                                FROM Staff, ScheduledAt, Theaters
+                                WHERE Name = '{}' 
+                                AND Staff.StaffID = ScheduledAt.StaffID
+                                AND ScheduledAt.TheaterCode = Theaters.TheaterCode; '''.format(empName))
+                print("##################################")
+                # Print results to user
+                for row in cur.fetchall():
+                    code = row[0]
+                    address = row[1]
+                    sponsor = row[2]
+                    print("Theater Code: {} ---> Address: {} ---> Sponsor: {}".format(code, address, sponsor))
+
+                if userInput == 2: # Advanced Query 2
+                    cur.execute('''  SELECT name FROM Customers,  ''')
+
+        if userInput == 0: # Go back to main_page()
             print("Returning to main page...\n\n")
+
 # end of admin_page()
 
 def about_page():
@@ -233,6 +257,7 @@ def member_portal(MemberID):
         
 
         if userInput == 5: #  Browse Movies
+            # Select and print all movies 
             cur.execute(''' SELECT MovieID, Name, Duration, Director, Rated, Rating, is3D FROM Movies;''')
             movies = cur.fetchall()
             for row in movies:
@@ -247,29 +272,34 @@ def member_portal(MemberID):
                     rating = "Not Rated"
                 is3D = row[6]
                 print("ID: {} ---> Movie: {} ---> Duration: {} -- Director: {} -- Rating: {} -- Movie in 3D: {}".format(id, name, dur, dir, rating, is3D))
-            userInput = int(input("Enter the name an ID to buy a ticket (or 0 to cancel): "))
-            if userInput:
+            # Ask the user to input movie they would like to buy (int cast removes the need for injection check)
+            userInput = int(input("Enter an ID to buy a ticket (or 0 to cancel): "))
+            if userInput: # if user selected a movie ID, create movie data
                 for movie in movies:
                     if int(movie[0]) == userInput:
-                        movieName = movie[1]
+                        movieName = movie[1] # movie name from previous cur.fetchall() stored in movies array
                 ticketID = str(random.randint(9999999, 99999999))
                 price = 6
-                purchaser = MemberID
+                purchaser = MemberID # global memberID
                 roomID = 2222
                 seat = 9
                 row = 'B'
                 cur.execute(''' SELECT ShowingID FROM Showing WHERE MovieID = '{}'; '''.format(userInput))
                 output = cur.fetchall()
-                Showing = output[0][0]
-                cur.execute(''' INSERT INTO Tickets(TicketID, Showing, Price, TicketPurchaser, RoomID, Seat, Row)
-	                            VALUES ({}, {}, {}, {}, {}, {}, '{}');   
-                            '''.format(ticketID, Showing, price, purchaser, roomID, seat, row))
-                conn.commit()
-                print("Congrats!!! Your ticket for {} has been purchased!!!".format(movieName))
+                if output: # if userInput matches a movieID in the database, add ticket to database
+                    Showing = output[0][0]
+                    cur.execute(''' INSERT INTO Tickets(TicketID, Showing, Price, TicketPurchaser, RoomID, Seat, Row)
+                                    VALUES ({}, {}, {}, {}, {}, {}, '{}');   
+                                '''.format(ticketID, Showing, price, purchaser, roomID, seat, row))
+                    conn.commit()
+                    print("Congrats!!! Your ticket for {} has been purchased!!!".format(movieName))
+                else:
+                    print("MovieID does not exist. Returning to greeting page...")
             userInput = -1
 
         if userInput == 0: #  Logout ---> returns user to main_page()
             print("Logging out...")
+
 # end member_portal()
 
 ### Main ###
