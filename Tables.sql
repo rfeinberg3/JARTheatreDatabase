@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS Movies (
+CREATE TABLE IF NOT EXISTS Movies ( -- VIEWS Movies to be displayed only to customers
     MovieID VARCHAR(12) PRIMARY KEY,
     Name VARCHAR(50),
     Duration TIME,
