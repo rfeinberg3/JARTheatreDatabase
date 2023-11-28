@@ -3,7 +3,7 @@ import psycopg2
 import random
 
 # connect to database server
-conn = psycopg2.connect(host="localhost", dbname="jarMovies", user="postgres", password="database_design", port=5433)
+conn = psycopg2.connect(host="localhost", dbname="", user="postgres", password="database_design", port=5433)
 
 # create cursor to database
 cur = conn.cursor()
@@ -20,7 +20,7 @@ def main_page():
         print("Navigations: ")
         print("1.  Member Login")
         print("2.  Admin Page")
-        print("3.  About JAR <-- Under Construction")
+        print("3.  About JAR")
         print("0.  Exit")
 
         # check user input
@@ -93,6 +93,11 @@ def member_login():
             # user input
             email = str(input("Enter an email address: "))
             password = str(input("Enter a password: "))
+            # Injection attack check
+            for CHAR in INJECTIONCHARS:
+                if ((CHAR in email) or (CHAR in password)):
+                    print(f"Invalid character = {CHAR}\nReturning to Main Page...")
+                    return
 
             # find user
             cur.execute(
@@ -191,9 +196,20 @@ def admin_page():
                     address = row[1]
                     sponsor = row[2]
                     print("Theater Code: {} ---> Address: {} ---> Sponsor: {}".format(code, address, sponsor))
+                userInput = -1
 
-                if userInput == 2: # Advanced Query 2
-                    cur.execute('''  SELECT name FROM Customers,  ''')
+            if userInput == 2: # Advanced Query 2
+                cur.execute('''  SELECT Customers.Name, ConcessionStand.Name 
+                                 FROM Customers, ConcessionPurchase, ConcessionStand
+                                 WHERE Customers.MemberID = ConcessionPurchase.MemberID 
+                                    AND ConcessionPurchase.ItemID = ConcessionStand.ItemID; ''')
+                print("##################################")
+                # Print results to user
+                for row in cur.fetchall():
+                    cust = row[0]
+                    food = row[1]
+                    print(f"Customer: {cust} ---> Food: {food}")
+                userInput = -1
 
         if userInput == 0: # Go back to main_page()
             print("Returning to main page...\n\n")
@@ -201,7 +217,8 @@ def admin_page():
 # end of admin_page()
 
 def about_page():
-    pass
+    print("\n\n##################################")
+    print("This program is based on a movie theater database system.\n  Storing information relevant to movie theaters and their relationships.")
 
 def member_portal(MemberID):
     userInput = -1
@@ -211,7 +228,7 @@ def member_portal(MemberID):
         print("##################")
         print("Navigations: ")
         print("1.  See Profile")
-        print("2.  Change Email or Password <--- Under Construction")
+        print("2.  Change Email or Password")
         print("3.  See Points")
         print("4.  See Purchased Tickets")
         print("5.  Browse Movies")
@@ -231,7 +248,21 @@ def member_portal(MemberID):
             print("Name: {}\nEmail: {}\nPassword: {}".format(name, email, password))
         
         if userInput == 2: #  Change Email or Password
-            continue
+            cur.execute(''' SELECT Email, Password FROM Customers WHERE MemberID = '{}';'''.format(MemberID))
+            output = cur.fetchall()
+            email = output[0][0]
+            password = output[0][1]
+            print("Email: {}\nPassword: {}".format(email, password))
+
+            email = input("New Email: ")
+            password = input("New Password: ")
+            for CHAR in INJECTIONCHARS:
+                if ((CHAR in email) or (CHAR in password)):
+                    print(f"Invalid character = {CHAR}\nReturning to Member Page...")
+                    return
+            cur.execute(''' UPDATE Customers SET email = '{}', password = '{}' WHERE MemberID = '{}'; '''.format(email, password, MemberID))
+            print("###############################")
+            print("Personal Information Updated!")
 
         if userInput == 3: #  See Points
             cur.execute(''' SELECT Points FROM Customers WHERE MemberID = '{}'; '''.format(MemberID))
