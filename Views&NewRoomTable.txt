@@ -1,0 +1,23 @@
+-- Create Views
+
+CREATE VIEW CustomerViewMovie AS SELECT MovieID, Name, Duration, Director, Rated, Rating, is3D FROM Movies;
+
+CREATE VIEW CustomerViewShowing AS SELECT MovieName, Date, StartTime, TheaterCode, RoomID FROM Showing GROUP BY MovieName, Date, StartTime, TheaterCode, RoomID ORDER BY StartTime;
+
+-- to look at CustomerViewMovie
+SELECT * FROM CustomerViewMovie;
+
+-- to look at CustomerViewShowing Table
+SELECT * FROM CustomerViewShowing;
+
+-- better Rooms Table
+CREATE TABLE IF NOT EXISTS Rooms (
+    RoomID INTEGER,
+    TheaterCode VARCHAR(12) REFERENCES Theaters ON DELETE CASCADE,
+    isXD BOOLEAN,
+    Capacity INTEGER,
+    PRIMARY KEY (RoomID, TheaterCode)
+);
+
+
+
