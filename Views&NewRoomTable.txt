@@ -2,6 +2,7 @@
 
 CREATE VIEW CustomerViewMovie AS SELECT Name, Duration, Director, Rated, Rating, is3D FROM Movies;
 
+-- I think I change this so that customers could see the theater name instead of the code
 CREATE VIEW CustomerViewShowing AS SELECT MovieName, Date, StartTime, TheaterCode, RoomID FROM Showing GROUP BY MovieName, Date, StartTime, TheaterCode, RoomID ORDER BY StartTime;
 
 CREATE VIEW CustomerViewTicket AS SELECT Showing, Price, RoomID, Seat, Row FROM Tickets 
