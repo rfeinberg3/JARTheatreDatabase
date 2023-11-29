@@ -1,6 +1,6 @@
 -- Create Views
 
-CREATE VIEW CustomerViewMovie AS SELECT MovieID, Name, Duration, Director, Rated, Rating, is3D FROM Movies;
+CREATE VIEW CustomerViewMovie AS SELECT Name, Duration, Director, Rated, Rating, is3D FROM Movies;
 
 CREATE VIEW CustomerViewShowing AS SELECT MovieName, Date, StartTime, TheaterCode, RoomID FROM Showing GROUP BY MovieName, Date, StartTime, TheaterCode, RoomID ORDER BY StartTime;
 
