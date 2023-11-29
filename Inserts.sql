@@ -43,11 +43,11 @@ INSERT INTO Showing(ShowingID, MovieID, MovieName, Date, StartTime, TheaterCode,
 
 INSERT INTO Customers(MemberID, Password, Points, Name, Email)
 	VALUES
-	('0123456789', 'ExpOfPassword?', 0, 'Jonh Doe', 'joedoe@yahoo.com'),
-	('0795246801', 'oU3.&B=\a%S!', 80, 'Genia Bendix', 'gbendix0@yelp.com'), 
-	('2419646792', 'cU6#JS!?GT&', 34, 'Arlyne McAvey', 'amcavey1@gmail.com'),
-	('8232602008', 'yO6#VMC378\{Z', 90, 'Tate Conrart', 'tconrart4@icloud.com'),
-	('1093764048', 'bH3#Ry.&3($p(3', 65, 'Stepha Bromby', 'sbromby9@gmail.com');
+	('0123456789', crypt('ExpOfPassword?', gen_salt('md5')), 0, 'Jonh Doe', 'joedoe@yahoo.com'),
+	('0795246801', crypt('oU3.&B=\a%S!', gen_salt('md5')), 80, 'Genia Bendix', 'gbendix0@yelp.com'),
+	('2419646792', crypt('cU6#JS!?GT&', gen_salt('md5')), 34, 'Arlyne McAvey', 'amcavey1@gmail.com'),
+	('8232602008', crypt('yO6#VMC378\{Z', gen_salt('md5')), 90, 'Tate Conrart', 'tconrart4@icloud.com'),
+	('1093764048', crypt('bH3#Ry.&3($p(3', gen_salt('md5')), 65, 'Stepha Bromby', 'sbromby9@gmail.com');
 
 INSERT INTO Tickets(TicketID, Showing, Price, TicketPurchaser, RoomID, Seat, Row)
 	VALUES
