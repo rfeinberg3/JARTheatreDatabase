@@ -16,6 +16,7 @@ SELECT * FROM CustomerViewMovie;
 SELECT * FROM CustomerViewShowing;
 
 -- better Rooms Table
+-- but it would require redoing other things, so maybe we leave the room table as it is.
 CREATE TABLE IF NOT EXISTS Rooms (
     RoomID INTEGER,
     TheaterCode VARCHAR(12) REFERENCES Theaters ON DELETE CASCADE,
