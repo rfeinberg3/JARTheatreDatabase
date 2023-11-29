@@ -4,6 +4,10 @@ CREATE VIEW CustomerViewMovie AS SELECT Name, Duration, Director, Rated, Rating,
 
 CREATE VIEW CustomerViewShowing AS SELECT MovieName, Date, StartTime, TheaterCode, RoomID FROM Showing GROUP BY MovieName, Date, StartTime, TheaterCode, RoomID ORDER BY StartTime;
 
+CREATE VIEW CustomerViewTicket AS SELECT Showing, Price, RoomID, Seat, Row FROM Tickets 
+GROUP BY Showing, Price, RoomID, Seat, Row 
+ORDER BY RoomID, Seat, Row;
+
 -- to look at CustomerViewMovie
 SELECT * FROM CustomerViewMovie;
 
