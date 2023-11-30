@@ -282,23 +282,27 @@ def member_portal(MemberID):
                              FROM Showing, Movies, Tickets WHERE TicketPurchaser = '{MemberID}' 
                                 AND Tickets.Showing = Showing.ShowingID 
                                 AND Showing.MovieID = Movies.MovieID;''')
-            for row in cur.fetchall():
-                name = row[0]
-                dur = row[1]
-                dir = row[2]
-                rated = row[3]
-                if rated:
-                    rating = row[4]
-                else:
-                    rating = "Not Rated"
-                is3D = row[5]
-                print("\n##########################################")
-                print("Ticket Purchased for -----  Movie: {} ---> Duration: {} -- Director: {} -- Rating: {} -- Movie in 3D: {}".format(name, dur, dir, rating, is3D))
-        
+            print("\n##########################################")
+            output = cur.fetchall()
+            if output:
+                for row in output:
+                    name = row[0]
+                    dur = row[1]
+                    dir = row[2]
+                    rated = row[3]
+                    if rated:
+                        rating = row[4]
+                    else:
+                        rating = "Not Rated"
+                    is3D = row[5]
+                    print("Ticket Purchased for -----  Movie: {} ---> Duration: {} -- Director: {} -- Rating: {} -- Movie in 3D: {}".format(name, dur, dir, rating, is3D))
+            else:
+                print("No Tickets ;(")
 
         if userInput == 5: #  Browse Movies
             # Select and print all movies 
             cur.execute(''' SELECT MovieID, Name, Duration, Director, Rated, Rating, is3D FROM Movies;''')
+            print("\n##########################################")
             movies = cur.fetchall()
             for row in movies:
                 id = row[0]
@@ -311,7 +315,6 @@ def member_portal(MemberID):
                 else:
                     rating = "Not Rated"
                 is3D = row[6]
-                print("\n##########################################")
                 print("ID: {} ---> Movie: {} ---> Duration: {} -- Director: {} -- Rating: {} -- Movie in 3D: {}".format(id, name, dur, dir, rating, is3D))
             # Ask the user to input movie they would like to buy (int cast removes the need for injection check)
             userInput = int(input("Enter an ID to buy a ticket (or 0 to cancel): "))
