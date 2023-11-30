@@ -3,7 +3,7 @@ import psycopg2
 import random
 
 # connect to database server
-conn = psycopg2.connect(host="localhost", dbname="", user="postgres", password="database_design", port=5433)
+conn = psycopg2.connect(host="localhost", dbname="JarMovies", user="postgres", password="database_design", port=5433)
 
 # create cursor to database
 cur = conn.cursor()
@@ -76,10 +76,11 @@ def member_login():
                             print(f"Invalid character = {CHAR}\nReturning to Main Page...")
                             return
             # Account creation valid
-            print("\n##########################################")
             print("Creating Account...")
             print("Account created with Member ID: {}".format(MemberID))
-            cur.execute(''' INSERT INTO Customers(MemberID, Password, Points, Name, Email) VALUES({}, '{}', 0, '{}', '{}' ) '''.format(MemberID, password, name, email))
+            cur.execute(''' INSERT INTO Customers(MemberID, Password, Points, Name, Email) VALUES({}, 0, '{}', '{}' ) '''.format(MemberID, name, email))
+            conn.commit()
+            cur.execute('''UPDATE Customers SET Password = crypt('{}', get_salt('md5')) WHERE MemberID = {};'''.format(password, MemberID))
             conn.commit()
             print("Account Created... Redirecting to login page...")
             userInput = 2
@@ -102,7 +103,7 @@ def member_login():
 
             # find user
             cur.execute(
-                ''' SELECT MemberID, Email, Password FROM Customers WHERE Email = '{}' AND Password = '{}'; '''.format(email, password)
+                ''' SELECT MemberID, Email, Password FROM Customers WHERE Email = '{}' AND Password = crypt('{}', Password); '''.format(email, password)
                 )
             for row in cur.fetchall():
                 MemberID = row[0]
@@ -111,7 +112,6 @@ def member_login():
                 userInput = 0 # set to 0 to return to main page when logout occurs (see while loop)
                 member_portal(MemberID)# call member page
             else:
-                print("\n##########################################")
                 print("Login details invalid. Returning to Navigation Page...")
                 userInput = -1
 
@@ -214,7 +214,6 @@ def admin_page():
                 userInput = -1
 
         if userInput == 0: # Go back to main_page()
-            print("\n##########################################")
             print("Returning to main page...\n\n")
 
 # end of admin_page()
@@ -248,7 +247,6 @@ def member_portal(MemberID):
             name = output[0][0]
             email = output[0][1]
             password = output[0][2]
-            print("\n########################################")
             print("Name: {}\nEmail: {}\nMemebrID: {}".format(name, email, MemberID))
         
         if userInput == 2: #  Change Email or Password
@@ -256,14 +254,12 @@ def member_portal(MemberID):
             output = cur.fetchall()
             email = output[0][0]
             password = output[0][1]
-            print("\n################################")
             print("Email: {}\nPassword: {}".format(email, password))
 
             email = input("New Email: ")
             password = input("New Password: ")
             for CHAR in INJECTIONCHARS:
                 if ((CHAR in email) or (CHAR in password)):
-                    print("\n##########################################")
                     print(f"Invalid character = {CHAR}\nReturning to Member Page...")
                     return
             cur.execute(''' UPDATE Customers SET email = '{}', password = '{}' WHERE MemberID = '{}'; '''.format(email, password, MemberID))
@@ -274,7 +270,6 @@ def member_portal(MemberID):
             cur.execute(''' SELECT Points FROM Customers WHERE MemberID = '{}'; '''.format(MemberID))
             output = cur.fetchall()
             points = output[0][0]
-            print("\n##########################################")
             print("JAR Point Total: {}".format(points))
 
         if userInput == 4: #  See DISTINCTLY Purchased Tickets
@@ -282,27 +277,22 @@ def member_portal(MemberID):
                              FROM Showing, Movies, Tickets WHERE TicketPurchaser = '{MemberID}' 
                                 AND Tickets.Showing = Showing.ShowingID 
                                 AND Showing.MovieID = Movies.MovieID;''')
-            print("\n##########################################")
-            output = cur.fetchall()
-            if output:
-                for row in output:
-                    name = row[0]
-                    dur = row[1]
-                    dir = row[2]
-                    rated = row[3]
-                    if rated:
-                        rating = row[4]
-                    else:
-                        rating = "Not Rated"
-                    is3D = row[5]
-                    print("Ticket Purchased for -----  Movie: {} ---> Duration: {} -- Director: {} -- Rating: {} -- Movie in 3D: {}".format(name, dur, dir, rating, is3D))
-            else:
-                print("No Tickets ;(")
+            for row in cur.fetchall():
+                name = row[0]
+                dur = row[1]
+                dir = row[2]
+                rated = row[3]
+                if rated:
+                    rating = row[4]
+                else:
+                    rating = "Not Rated"
+                is3D = row[5]
+                print("Ticket Purchased for -----  Movie: {} ---> Duration: {} -- Director: {} -- Rating: {} -- Movie in 3D: {}".format(name, dur, dir, rating, is3D))
+        
 
         if userInput == 5: #  Browse Movies
             # Select and print all movies 
             cur.execute(''' SELECT MovieID, Name, Duration, Director, Rated, Rating, is3D FROM Movies;''')
-            print("\n##########################################")
             movies = cur.fetchall()
             for row in movies:
                 id = row[0]
@@ -336,15 +326,12 @@ def member_portal(MemberID):
                                     VALUES ({}, {}, {}, {}, {}, {}, '{}');   
                                 '''.format(ticketID, Showing, price, purchaser, roomID, seat, row))
                     conn.commit()
-                    print("\n##########################################")
                     print("Congrats!!! Your ticket for {} has been purchased!!!".format(movieName))
                 else:
-                    print("\n##########################################")
                     print("MovieID does not exist. Returning to greeting page...")
             userInput = -1
 
         if userInput == 0: #  Logout ---> returns user to main_page()
-            print("\n##########################################")
             print("Logging out...")
 
 # end member_portal()
